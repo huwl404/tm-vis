@@ -74,7 +74,7 @@ repository = "https://github.com/warpem/warp-tm-vis"
 warp-tm-vis = "warp_tm_vis.cli:cli"
 
 # [project.entry-points."some.group"]
-# tomatoes = "warp_tm_vis:main_tomatoes"
+# tomatoes = "tm_vis:main_tomatoes"
 
 # https://docs.astral.sh/ruff
 [tool.ruff]
