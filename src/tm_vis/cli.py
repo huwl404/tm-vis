@@ -29,15 +29,15 @@ from rich.console import Console
 import typer
 from magicgui import magicgui
 
-from utils import (
+# .utils is for running in Linux
+from .utils import (
     find_correlation_volume_file,
     update_volume_layers,
     update_particle_layer,
     update_particle_layer_withoutcc,
     get_particle_positions_and_cc,
     get_absolute_particle_positions,
-    update_corvol_layers,
-    find_particles_file
+    update_corvol_layers
 )
 
 console = Console()
