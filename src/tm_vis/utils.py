@@ -111,8 +111,8 @@ def get_absolute_particle_positions(tomogram_file: str, particle_files: list[Pat
 
 def find_particles_file(tomogram_file: Path, particle_files: list[Path], tomogram_matching_pattern) -> Path | None:
     # tmp 后缀为 "*_10.000Apx.mrc"）
-    tomo_core = tomogram_file.stem.replace(tomogram_matching_pattern[1:], "")
-    print(tomogram_file.stem, tomogram_matching_pattern, tomo_core)
+    # tomogram_file.stem is the name except suffix!
+    tomo_core = tomogram_file.name.replace(tomogram_matching_pattern[1:], "")
     matching_files = [f for f in particle_files if f.name.startswith(tomo_core)]
 
     if len(matching_files) == 1:
