@@ -86,19 +86,27 @@ def update_particle_layer_withoutcc(
         viewer.layers['particles'].metadata['ts_id'] = tomogram_name
 
 
-def get_particle_positions_and_cc(tomogram_file: str, particle_files: list[Path], tomogram_matching_pattern) -> np.ndarray:
-    df = starfile.read(find_particles_file(Path(tomogram_file), particle_files, tomogram_matching_pattern))
-    zyx = df[['rlnCoordinateZ', 'rlnCoordinateY', 'rlnCoordinateX']].to_numpy()
-    cc = df['rlnAutopickFigureOfMerit'].to_numpy()
-    with mrcfile.open(tomogram_file, header_only=True) as mrc:
-        nz, ny, nx = mrc.header.nz, mrc.header.ny, mrc.header.nx
-    return zyx * np.array([nz, ny, nx]), cc
+def get_particle_positions_and_cc(tomogram_file: str, particle_files: list[Path], tomogram_matching_pattern):
+    f = find_particles_file(Path(tomogram_file), particle_files, tomogram_matching_pattern)
+    if f:
+        df = starfile.read(f)
+        zyx = df[['rlnCoordinateZ', 'rlnCoordinateY', 'rlnCoordinateX']].to_numpy()
+        cc = df['rlnAutopickFigureOfMerit'].to_numpy()
+        with mrcfile.open(tomogram_file, header_only=True) as mrc:
+            nz, ny, nx = mrc.header.nz, mrc.header.ny, mrc.header.nx
+        return zyx * np.array([nz, ny, nx]), cc
+    else:
+        return None, None
 
 
-def get_absolute_particle_positions(tomogram_file: str, particle_files: list[Path], tomogram_matching_pattern) -> np.ndarray:
-    df = starfile.read(find_particles_file(Path(tomogram_file), particle_files, tomogram_matching_pattern))
-    zyx = df[['rlnCoordinateZ', 'rlnCoordinateY', 'rlnCoordinateX']].to_numpy()
-    return zyx
+def get_absolute_particle_positions(tomogram_file: str, particle_files: list[Path], tomogram_matching_pattern):
+    f = find_particles_file(Path(tomogram_file), particle_files, tomogram_matching_pattern)
+    if f:
+        df = starfile.read(f)
+        zyx = df[['rlnCoordinateZ', 'rlnCoordinateY', 'rlnCoordinateX']].to_numpy()
+        return zyx
+    else:
+        return None
 
 
 def find_particles_file(tomogram_file: Path, particle_files: list[Path], tomogram_matching_pattern) -> Path | None:
@@ -108,8 +116,10 @@ def find_particles_file(tomogram_file: Path, particle_files: list[Path], tomogra
 
     if len(matching_files) == 1:
         return matching_files[0]
+    elif len(matching_files) == 0:
+        return None
     else:
-        raise RuntimeError('found no files or too many files')
+        raise RuntimeError('found too many files')
 
 
 def find_correlation_volume_file(tomogram_file: Path, correlation_volume_files: list[Path]) -> Path | None:

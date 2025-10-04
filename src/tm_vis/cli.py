@@ -147,16 +147,22 @@ def warp_tm_vis(
         if load_particles and load_correlation_volumes:  # load particle positions and cc values for Warp outputs
             console.log(f"loading particle metadata...")
             zyx, cc = get_particle_positions_and_cc(tomogram.name, particle_files, tomogram_matching_pattern)
-            console.log(f"particle metadata loaded")
-            # notify user of max cc
-            ts_id = Path(tomogram.name).name
-            napari.utils.notifications.show_info(f"max cc for {ts_id} is {cc.max()}")
-            update_particle_layer(viewer, zyx, cc, tomogram.name)
+            if zyx:
+                console.log(f"particle metadata loaded")
+                # notify user of max cc
+                ts_id = Path(tomogram.name).name
+                napari.utils.notifications.show_info(f"max cc for {ts_id} is {cc.max()}")
+                update_particle_layer(viewer, zyx, cc, tomogram.name)
+            else:
+                console.log(f"No particle file found for {tomogram.name}")
         elif load_particles and not load_correlation_volumes:  # load particle positions for star files
             console.log(f"loading particle metadata...")
             zyx = get_absolute_particle_positions(tomogram.name, particle_files, tomogram_matching_pattern)
-            console.log(f"particle metadata loaded")
-            update_particle_layer_withoutcc(viewer, zyx, bin, tomogram.name)
+            if zyx:
+                console.log(f"particle metadata loaded")
+                update_particle_layer_withoutcc(viewer, zyx, bin, tomogram.name)
+            else:
+                console.log(f"No particle file found for {tomogram.name}")
 
     # create interactive widget for subsetting particles
     @magicgui(auto_call=True)
