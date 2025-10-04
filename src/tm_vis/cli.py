@@ -56,7 +56,7 @@ def warp_tm_vis(
         help="directory containing tomograms e.g. warp_tiltseries/reconstruction/deconv (if not provided, wont load tomograms)"
     ),
     matching_directory: Optional[Path] = typer.Option(
-        ...,
+        None,
         '--matching-directory', '-mdir',
         help="directory containing particles e.g. warp_tiltseries/matching (if not provided, wont load particles)"
     ),
@@ -80,19 +80,9 @@ def warp_tm_vis(
         '--bin', '-b',
         help="binning factor applied to both the tomogram and particle coordinates in case of Out Of Memory"
     ),
-    load_volumes: bool = typer.Option(
-        default=True,
-        help="whether or not to load reconstructions"
-    ),
-    load_particles: bool = typer.Option(
-        default=True,
-        help="whether or not to load particles"
-    ),
-    load_correlation_volumes: bool = typer.Option(
-        default=True,
-        help="whether or not to load correlation volumes (overridden to False if no cvp provided)"
-    ),
 ):
+    load_volumes, load_particles, load_correlation_volumes = True, True, True
+
     if reconstruction_directory is None:
         console.log("No reconstruction directory provided -> wont load tomograms.")
         load_volumes = False
