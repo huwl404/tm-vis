@@ -51,7 +51,7 @@ cli = typer.Typer(add_completion=False)
 )
 def warp_tm_vis(
     reconstruction_directory: Optional[Path] = typer.Option(
-        ...,
+        None,
         '--reconstruction-directory', '-rdir',
         help="directory containing tomograms e.g. warp_tiltseries/reconstruction/deconv (if not provided, wont load tomograms)"
     ),
@@ -103,7 +103,7 @@ def warp_tm_vis(
         correlation_volume_files = list(matching_directory.glob(correlation_volume_pattern))
         console.log(f"found {len(correlation_volume_files)} correlation volume files")
     else:
-        console.log("No correlation volume pattern provided -> wont load them.")
+        console.log("No correlation volume pattern provided -> wont load correlation volumes.")
         load_correlation_volumes = False
 
     with console.status("launching napari viewer...", spinner="arc"):
@@ -152,7 +152,7 @@ def warp_tm_vis(
             ts_id = Path(tomogram.name).name
             napari.utils.notifications.show_info(f"max cc for {ts_id} is {cc.max()}")
             update_particle_layer(viewer, zyx, cc, tomogram.name)
-        elif not load_correlation_volumes:  # load particle positions for star files
+        elif load_particles and not load_correlation_volumes:  # load particle positions for star files
             console.log(f"loading particle metadata...")
             zyx = get_absolute_particle_positions(tomogram.name, particle_files, tomogram_matching_pattern)
             console.log(f"particle metadata loaded")
